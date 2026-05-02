@@ -129,10 +129,15 @@ function performAutofill(data) {
     const isRequired = input.required || 
                        input.getAttribute('aria-required') === 'true' || 
                        labelText.includes('*') || 
-                       input.classList.contains('required');
+                       labelText.toLowerCase().includes('required') ||
+                       input.classList.contains('required') ||
+                       input.parentElement.innerText.includes('*');
                        
-    // If not required, skip it as requested by the user
-    if (!isRequired) return;
+    // If not required, skip it (unless it's a known important field)
+    const importantKeywords = ['name', 'email', 'phone', 'authorized', 'visa', 'sponsorship', 'veteran', 'disability'];
+    const isImportant = importantKeywords.some(kw => context.includes(kw));
+
+    if (!isRequired && !isImportant) return;
 
     let wasFilled = false;
     const label = labelText.toLowerCase();
@@ -165,7 +170,7 @@ function performAutofill(data) {
     }
     
     // 2. Work Authorization & Eligibility
-    else if (context.includes('authorized') || context.includes('permission to work')) {
+    else if (context.includes('authorized') || context.includes('permission to work') || context.includes('legal right')) {
         // If the form asks about a specific country, and it matches our profile
         if (data.workAuth && context.includes(data.workAuth.toLowerCase())) {
             wasFilled = handleCategoricalInput(input, 'Yes');
@@ -173,14 +178,14 @@ function performAutofill(data) {
             // Default to Yes if they are authorized somewhere and no specific country is mentioned
             wasFilled = handleCategoricalInput(input, 'Yes');
         }
-    } else if (context.includes('sponsorship') || context.includes('visa')) {
+    } else if (context.includes('sponsorship') || context.includes('visa') || context.includes('sponsor')) {
         wasFilled = handleCategoricalInput(input, data.visaSupport);
     }
     
     // 3. Veteran & Disability
-    else if (context.includes('veteran')) {
-        handleCategoricalInput(input, data.veteran);
-    } else if (context.includes('disability')) {
+    else if (context.includes('veteran') || context.includes('military')) {
+        wasFilled = handleCategoricalInput(input, data.veteran);
+    } else if (context.includes('disability') || context.includes('impairment') || context.includes('handicap')) {
         if (data.disability && !['no', 'none', 'n/a'].includes(data.disability.toLowerCase())) {
             wasFilled = handleCategoricalInput(input, 'Yes');
         } else {
@@ -245,11 +250,30 @@ function handleCategoricalInput(input, value) {
             return true;
         }
     } else if (input.type === 'radio' || input.type === 'checkbox') {
-        const parent = input.closest('div, label, fieldset');
+        // Look at the label text specifically for this input
+        const parent = input.closest('div, label, fieldset, li, tr');
         if (parent) {
-            const labelText = parent.innerText.toLowerCase();
-            if (labelText.includes(value.toLowerCase())) {
+            // Try to find the label text that belongs to this specific radio/checkbox
+            let optionLabel = '';
+            
+            // Check if it's wrapped in a label
+            const wrappingLabel = input.closest('label');
+            if (wrappingLabel) {
+                optionLabel = wrappingLabel.innerText.toLowerCase();
+            } else if (input.id) {
+                // Check for label with 'for' attribute
+                const forLabel = document.querySelector(`label[for="${input.id}"]`);
+                if (forLabel) optionLabel = forLabel.innerText.toLowerCase();
+            }
+
+            // Fallback: search nearby text
+            if (!optionLabel) {
+                optionLabel = parent.innerText.toLowerCase();
+            }
+
+            if (optionLabel.includes(value.toLowerCase())) {
                 input.checked = true;
+                input.dispatchEvent(new Event('click', { bubbles: true }));
                 input.dispatchEvent(new Event('change', { bubbles: true }));
                 return true;
             }
