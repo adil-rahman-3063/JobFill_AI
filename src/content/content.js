@@ -160,18 +160,7 @@ function performAutofill(data) {
             wasFilled = handleCategoricalInput(input, 'Yes');
         }
     } else if (context.includes('sponsorship') || context.includes('visa')) {
-        // If they specify a country they need sponsorship for
-        if (data.visaSupport && data.visaSupport.toLowerCase() !== 'none') {
-            if (context.includes(data.visaSupport.toLowerCase())) {
-                wasFilled = handleCategoricalInput(input, 'Yes');
-            } else {
-                // If the form asks about sponsorship generally and they have a country listed
-                wasFilled = handleCategoricalInput(input, 'Yes');
-            }
-        } else {
-            // They don't need sponsorship anywhere
-            wasFilled = handleCategoricalInput(input, 'No');
-        }
+        wasFilled = handleCategoricalInput(input, data.visaSupport);
     }
     
     // 3. Veteran & Disability
@@ -192,12 +181,7 @@ function performAutofill(data) {
         fillValue(input, data.salary);
         wasFilled = !!data.salary;
     } else if (context.includes('relocate')) {
-        // Match relocation countries
-        if (data.relocation && (context.includes(data.relocation.toLowerCase()) || data.relocation.toLowerCase() === 'worldwide')) {
-            wasFilled = handleCategoricalInput(input, 'Yes');
-        } else {
-            wasFilled = handleCategoricalInput(input, 'No');
-        }
+        wasFilled = handleCategoricalInput(input, data.relocation);
     }
 
     // 5. Resume Text

@@ -83,8 +83,12 @@
               <input type="text" id="workAuth" placeholder="e.g. United States, India, UK">
             </div>
             <div class="form-group">
-              <label for="visaSupport">In which countries will you require visa sponsorship?</label>
-              <input type="text" id="visaSupport" placeholder="e.g. United States, UK, or 'None'">
+              <label for="visaSupport">Will you require visa sponsorship now or in the future?</label>
+              <select id="visaSupport">
+                <option value="" selected disabled>Select...</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
             </div>
             <div class="form-group">
               <label for="veteran">Are you a protected veteran?</label>
@@ -122,8 +126,12 @@
                 <input type="text" id="salary" placeholder="e.g. $120,000">
               </div>
               <div class="form-group">
-                <label for="relocation">Where are you open to relocating to?</label>
-                <input type="text" id="relocation" placeholder="e.g. Remote, Europe, Worldwide">
+                <label for="relocation">Are you willing to relocate?</label>
+                <select id="relocation">
+                  <option value="" selected disabled>Select...</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
               </div>
             </div>
           </div>
