@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      width: 300px;
+      padding: 20px;
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: 'Inter', sans-serif;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .logo {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #7000ff, #00f2ff);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #7000ff, #00f2ff);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .btn-secondary {
+      background: #21262d;
+      border: 1px solid #30363d;
+    }
+    .status {
+      font-size: 0.8rem;
+      color: #8b949e;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">J</div>
+    <div style="font-weight: 700;">JobFill AI</div>
+  </div>
+  <button id="open-sidebar" class="btn">Open Sidebar</button>
+  <button id="open-options" class="btn btn-secondary">Settings</button>
+  <div id="status" class="status">Profile: checking...</div>
+  <script src="popup.js"></script>
+</body>
+</html>

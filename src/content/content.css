@@ -1,0 +1,4 @@
+/* Global overrides for content script if needed */
+#jobfill-sidebar-container {
+    all: initial; /* Reset styles to prevent site leakage */
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup JobFill AI</title>
+  <link rel="stylesheet" href="options.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="onboarding-card">
+      <div class="sidebar-nav">
+        <div class="logo">
+          <div class="logo-icon">J</div>
+          <span>JobFill AI</span>
+        </div>
+        <nav>
+          <button class="nav-item active" data-step="1">Personal Info</button>
+          <button class="nav-item" data-step="2">Professional Links</button>
+          <button class="nav-item" data-step="3">Resume & AI</button>
+          <button class="nav-item" data-step="4">API Configuration</button>
+        </nav>
+      </div>
+
+      <main class="content">
+        <form id="onboarding-form">
+          <!-- Step 1: Personal Info -->
+          <div class="step active" id="step-1">
+            <h1>Let's get started</h1>
+            <p>Tell us about yourself so we can autofill your applications.</p>
+            
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="John Doe" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="john@example.com" required>
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" placeholder="+1 (555) 000-0000">
+              </div>
+              <div class="form-group">
+                <label for="location">Location (City, Country)</label>
+                <input type="text" id="location" placeholder="New York, USA">
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Professional Links -->
+          <div class="step" id="step-2">
+            <h1>Professional Links</h1>
+            <p>Connect your profiles to enhance your applications.</p>
+            
+            <div class="form-group">
+              <label for="linkedin">LinkedIn URL</label>
+              <input type="url" id="linkedin" placeholder="https://linkedin.com/in/username">
+            </div>
+            <div class="form-group">
+              <label for="github">GitHub URL</label>
+              <input type="url" id="github" placeholder="https://github.com/username">
+            </div>
+            <div class="form-group">
+              <label for="portfolio">Portfolio/Website</label>
+              <input type="url" id="portfolio" placeholder="https://yourwebsite.com">
+            </div>
+          </div>
+
+          <!-- Step 3: Resume -->
+          <div class="step" id="step-3">
+            <h1>Resume Content</h1>
+            <p>Paste your resume text here. Gemini will use this to answer complex application questions.</p>
+            
+            <div class="form-group">
+              <label for="resumeText">Resume Text</label>
+              <textarea id="resumeText" rows="10" placeholder="Paste your resume here..."></textarea>
+            </div>
+          </div>
+
+          <!-- Step 4: API Configuration -->
+          <div class="step" id="step-4">
+            <h1>AI Configuration</h1>
+            <p>Configure the Gemini API to power your autofill experience.</p>
+            
+            <div class="form-group">
+              <label for="apiKey">Gemini API Key</label>
+              <input type="password" id="apiKey" placeholder="Enter your Google AI API Key">
+              <small>Get your key from <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a></small>
+            </div>
+
+            <div class="info-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <span>Your data is stored locally in your browser and never sent to our servers.</span>
+            </div>
+          </div>
+
+          <div class="footer-actions">
+            <button type="button" id="prevBtn" class="btn btn-secondary" style="display: none;">Back</button>
+            <button type="button" id="nextBtn" class="btn btn-primary">Next</button>
+            <button type="submit" id="saveBtn" class="btn btn-primary" style="display: none;">Save & Finish</button>
+          </div>
+        </form>
+      </main>
+    </div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
