@@ -8,7 +8,8 @@
 
 - **🧠 Intelligent Job Analysis**: Automatically extracts Company Name, Role, and Required Skills from any job page.
 - **⚡ One-Click Autofill**: Maps your personal profile and resume data to form fields across major job platforms (LinkedIn, Indeed, Lever, Greenhouse, etc.).
-- **💎 Premium Design**: A stunning, glassmorphic sidebar UI that integrates seamlessly with your browsing experience.
+- **📂 Resume Upload**: Securely upload your resume (PDF, TXT) and store it locally for AI processing.
+- **💎 Premium Docked Sidebar**: A stunning, glassmorphic sidebar that pushes page content so you can see the application form clearly.
 - **🛡️ Privacy First**: Your sensitive data (API keys, resume, etc.) is stored locally in your browser. No external servers involved.
 - **🚀 Onboarding Experience**: A smooth, multi-step setup flow to get you started in seconds.
 

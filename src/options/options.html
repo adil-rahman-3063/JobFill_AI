@@ -20,13 +20,15 @@
         <nav>
           <button class="nav-item active" data-step="1">Personal Info</button>
           <button class="nav-item" data-step="2">Professional Links</button>
-          <button class="nav-item" data-step="3">Resume & AI</button>
-          <button class="nav-item" data-step="4">API Configuration</button>
+          <button class="nav-item" data-step="3">Work & Eligibility</button>
+          <button class="nav-item" data-step="4">Diversity & Preferences</button>
+          <button class="nav-item" data-step="5">Resume & AI</button>
+          <button class="nav-item" data-step="6">API Configuration</button>
         </nav>
       </div>
 
       <main class="content">
-        <form id="onboarding-form">
+        <form id="onboarding-form" novalidate>
           <!-- Step 1: Personal Info -->
           <div class="step active" id="step-1">
             <h1>Let's get started</h1>
@@ -35,11 +37,11 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="fullName">Full Name</label>
-                <input type="text" id="fullName" placeholder="John Doe" required>
+                <input type="text" id="fullName" placeholder="John Doe">
               </div>
               <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="john@example.com" required>
+                <input type="email" id="email" placeholder="john@example.com">
               </div>
               <div class="form-group">
                 <label for="phone">Phone Number</label>
@@ -71,19 +73,104 @@
             </div>
           </div>
 
-          <!-- Step 3: Resume -->
+          <!-- Step 3: Work & Eligibility -->
           <div class="step" id="step-3">
-            <h1>Resume Content</h1>
-            <p>Paste your resume text here. Gemini will use this to answer complex application questions.</p>
+            <h1>Work & Eligibility</h1>
+            <p>Help us answer authorization and veteran questions.</p>
             
             <div class="form-group">
-              <label for="resumeText">Resume Text</label>
-              <textarea id="resumeText" rows="10" placeholder="Paste your resume here..."></textarea>
+              <label for="workAuth">Legally authorized to work in this country?</label>
+              <select id="workAuth">
+                <option value="" selected disabled>Select...</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="visaSupport">Will you require visa sponsorship now or in the future?</label>
+              <select id="visaSupport">
+                <option value="" selected disabled>Select...</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="veteran">Are you a protected veteran?</label>
+              <select id="veteran">
+                <option value="" selected disabled>Select...</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
             </div>
           </div>
 
-          <!-- Step 4: API Configuration -->
+          <!-- Step 4: Diversity & Preferences -->
           <div class="step" id="step-4">
+            <h1>Diversity & Preferences</h1>
+            <p>These are often required for reporting purposes.</p>
+            
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender">
+                  <option value="">Select...</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Non-binary">Non-binary</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="disability">Disability Status</label>
+                <select id="disability">
+                  <option value="" selected disabled>Select...</option>
+                  <option value="No">No</option>
+                  <option value="Yes">Yes</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="salary">Expected Salary (Annual)</label>
+                <input type="text" id="salary" placeholder="e.g. $120,000">
+              </div>
+              <div class="form-group">
+                <label for="relocation">Open to Relocation?</label>
+                <select id="relocation">
+                  <option value="" selected disabled>Select...</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 5: Resume -->
+          <div class="step" id="step-5">
+            <h1>Upload Resume</h1>
+            <p>Upload your resume (PDF or TXT). We'll use this to answer complex application questions.</p>
+            
+            <div class="upload-container" id="drop-zone">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <div class="upload-text">
+                <strong>Click to upload</strong> or drag and drop
+                <span>PDF, DOCX, or TXT (max 2MB)</span>
+              </div>
+              <input type="file" id="resumeFile" accept=".pdf,.txt,.docx" style="display: none;">
+            </div>
+            
+            <div id="file-preview" class="file-preview" style="display: none;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              <span id="file-name">resume.pdf</span>
+              <button type="button" id="remove-file">&times;</button>
+            </div>
+
+            <!-- Hidden textarea to store extracted text or data URL -->
+            <textarea id="resumeText" style="display: none;"></textarea>
+          </div>
+
+          <!-- Step 6: API Configuration -->
+          <div class="step" id="step-6">
             <h1>AI Configuration</h1>
             <p>Configure the Gemini API to power your autofill experience.</p>
             

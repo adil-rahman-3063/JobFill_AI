@@ -6,6 +6,7 @@ const companyEl = document.getElementById('company-name');
 const roleEl = document.getElementById('job-role');
 const skillsEl = document.getElementById('skills-list');
 const autofillBtn = document.getElementById('autofill-btn');
+const rescanBtn = document.getElementById('rescan-btn');
 const settingsBtn = document.getElementById('settings-btn');
 const loadingOverlay = document.getElementById('loading-overlay');
 const formStatusDot = document.querySelector('.status-indicator .dot');
@@ -14,13 +15,32 @@ const formStatusText = document.querySelector('.status-indicator span');
 // Initial state
 loadingOverlay.style.display = 'flex';
 
-// Listen for analysis results
+// Listen for analysis results (from background via content script)
+window.addEventListener('message', (event) => {
+  if (event.data.type === 'JOB_ANALYSIS_RESULTS') {
+    updateJobDetails(event.data.data);
+    loadingOverlay.style.display = 'none';
+  }
+});
+
+// Also keep runtime listener as fallback
 chrome.runtime.onMessage.addListener((message) => {
   if (message.type === 'JOB_ANALYSIS_RESULTS') {
     updateJobDetails(message.data);
     loadingOverlay.style.display = 'none';
   }
 });
+
+// Timeout for loading overlay
+setTimeout(() => {
+    if (loadingOverlay.style.display !== 'none') {
+        loadingOverlay.style.display = 'none';
+        if (companyEl.innerText === 'Analyzing...') {
+            companyEl.innerText = 'Analysis Timed Out';
+            roleEl.innerText = 'Please refresh';
+        }
+    }
+}, 10000); // 10 seconds timeout
 
 function updateJobDetails(data) {
   companyEl.innerText = data.companyName || 'Unknown';
@@ -65,6 +85,15 @@ autofillBtn.addEventListener('click', () => {
         }, 2000);
     }
   });
+});
+
+rescanBtn.addEventListener('click', () => {
+    loadingOverlay.style.display = 'flex';
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, {
+            type: 'RESCAN_PAGE'
+        });
+    });
 });
 
 settingsBtn.addEventListener('click', () => {

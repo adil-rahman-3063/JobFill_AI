@@ -9,6 +9,9 @@ document.getElementById('open-sidebar').addEventListener('click', () => {
       func: () => {
         if (typeof injectSidebar === 'function') {
             injectSidebar();
+            if (typeof analyzeJobPage === 'function') {
+                analyzeJobPage();
+            }
         } else {
             alert('Please refresh the page to enable JobFill AI.');
         }
