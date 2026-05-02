@@ -152,16 +152,37 @@ function performAutofill(data) {
     
     // 2. Work Authorization & Eligibility
     else if (context.includes('authorized') || context.includes('permission to work')) {
-        wasFilled = handleCategoricalInput(input, data.workAuth);
+        // If the form asks about a specific country, and it matches our profile
+        if (data.workAuth && context.includes(data.workAuth.toLowerCase())) {
+            wasFilled = handleCategoricalInput(input, 'Yes');
+        } else {
+            // Default to Yes if they are authorized somewhere and no specific country is mentioned
+            wasFilled = handleCategoricalInput(input, 'Yes');
+        }
     } else if (context.includes('sponsorship') || context.includes('visa')) {
-        wasFilled = handleCategoricalInput(input, data.visaSupport);
+        // If they specify a country they need sponsorship for
+        if (data.visaSupport && data.visaSupport.toLowerCase() !== 'none') {
+            if (context.includes(data.visaSupport.toLowerCase())) {
+                wasFilled = handleCategoricalInput(input, 'Yes');
+            } else {
+                // If the form asks about sponsorship generally and they have a country listed
+                wasFilled = handleCategoricalInput(input, 'Yes');
+            }
+        } else {
+            // They don't need sponsorship anywhere
+            wasFilled = handleCategoricalInput(input, 'No');
+        }
     }
     
     // 3. Veteran & Disability
     else if (context.includes('veteran')) {
-        wasFilled = handleCategoricalInput(input, data.veteran);
+        handleCategoricalInput(input, data.veteran);
     } else if (context.includes('disability')) {
-        wasFilled = handleCategoricalInput(input, data.disability);
+        if (data.disability && !['no', 'none', 'n/a'].includes(data.disability.toLowerCase())) {
+            wasFilled = handleCategoricalInput(input, 'Yes');
+        } else {
+            wasFilled = handleCategoricalInput(input, 'No');
+        }
     }
     
     // 4. Diversity & Preferences
@@ -171,7 +192,12 @@ function performAutofill(data) {
         fillValue(input, data.salary);
         wasFilled = !!data.salary;
     } else if (context.includes('relocate')) {
-        wasFilled = handleCategoricalInput(input, data.relocation);
+        // Match relocation countries
+        if (data.relocation && (context.includes(data.relocation.toLowerCase()) || data.relocation.toLowerCase() === 'worldwide')) {
+            wasFilled = handleCategoricalInput(input, 'Yes');
+        } else {
+            wasFilled = handleCategoricalInput(input, 'No');
+        }
     }
 
     // 5. Resume Text

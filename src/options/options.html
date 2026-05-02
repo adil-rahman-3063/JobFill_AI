@@ -79,20 +79,12 @@
             <p>Help us answer authorization and veteran questions.</p>
             
             <div class="form-group">
-              <label for="workAuth">Legally authorized to work in this country?</label>
-              <select id="workAuth">
-                <option value="" selected disabled>Select...</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
+              <label for="workAuth">In which country are you legally authorized to work?</label>
+              <input type="text" id="workAuth" placeholder="e.g. United States, India, UK">
             </div>
             <div class="form-group">
-              <label for="visaSupport">Will you require visa sponsorship now or in the future?</label>
-              <select id="visaSupport">
-                <option value="" selected disabled>Select...</option>
-                <option value="No">No</option>
-                <option value="Yes">Yes</option>
-              </select>
+              <label for="visaSupport">In which countries will you require visa sponsorship?</label>
+              <input type="text" id="visaSupport" placeholder="e.g. United States, UK, or 'None'">
             </div>
             <div class="form-group">
               <label for="veteran">Are you a protected veteran?</label>
@@ -122,25 +114,16 @@
                 </select>
               </div>
               <div class="form-group">
-                <label for="disability">Disability Status</label>
-                <select id="disability">
-                  <option value="" selected disabled>Select...</option>
-                  <option value="No">No</option>
-                  <option value="Yes">Yes</option>
-                  <option value="Prefer not to say">Prefer not to say</option>
-                </select>
+                <label for="disability">Disability Status / Details</label>
+                <input type="text" id="disability" placeholder="e.g. No, or 'Visual Impairment', etc.">
               </div>
               <div class="form-group">
                 <label for="salary">Expected Salary (Annual)</label>
                 <input type="text" id="salary" placeholder="e.g. $120,000">
               </div>
               <div class="form-group">
-                <label for="relocation">Open to Relocation?</label>
-                <select id="relocation">
-                  <option value="" selected disabled>Select...</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
-                </select>
+                <label for="relocation">Where are you open to relocating to?</label>
+                <input type="text" id="relocation" placeholder="e.g. Remote, Europe, Worldwide">
               </div>
             </div>
           </div>
