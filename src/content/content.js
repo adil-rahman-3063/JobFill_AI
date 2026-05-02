@@ -120,11 +120,22 @@ function performAutofill(data) {
     // Skip hidden, submit, or button inputs
     if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') return;
     
-    const label = findLabelForInput(input).trim();
-    if (!label) return;
+    const labelText = findLabelForInput(input).trim();
+    if (!labelText) return;
     
-    const context = `${label} ${(input.placeholder || '')} ${(input.name || '')} ${(input.id || '')}`.toLowerCase();
+    const context = `${labelText} ${(input.placeholder || '')} ${(input.name || '')} ${(input.id || '')}`.toLowerCase();
+    
+    // Check if the field is required
+    const isRequired = input.required || 
+                       input.getAttribute('aria-required') === 'true' || 
+                       labelText.includes('*') || 
+                       input.classList.contains('required');
+                       
+    // If not required, skip it as requested by the user
+    if (!isRequired) return;
+
     let wasFilled = false;
+    const label = labelText.toLowerCase();
     
     // 1. Personal & Professional
     if (context.includes('name') && !context.includes('company')) {
@@ -148,7 +159,10 @@ function performAutofill(data) {
     } else if (context.includes('location') || context.includes('city') || context.includes('address')) {
         fillValue(input, data.location);
         wasFilled = !!data.location;
-    } 
+    } else if (context.includes('postal') || context.includes('zip')) {
+        fillValue(input, data.postalCode);
+        wasFilled = !!data.postalCode;
+    }
     
     // 2. Work Authorization & Eligibility
     else if (context.includes('authorized') || context.includes('permission to work')) {

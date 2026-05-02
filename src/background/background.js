@@ -13,6 +13,7 @@ chrome.runtime.onInstalled.addListener((details) => {
         email: "",
         phone: "",
         location: "",
+        postalCode: "",
         linkedin: "",
         github: "",
         portfolio: "",

@@ -162,6 +162,7 @@ form.addEventListener('submit', (e) => {
     email: document.getElementById('email').value,
     phone: document.getElementById('phone').value,
     location: document.getElementById('location').value,
+    postalCode: document.getElementById('postalCode').value,
     linkedin: document.getElementById('linkedin').value,
     github: document.getElementById('github').value,
     portfolio: document.getElementById('portfolio').value,
