@@ -11,6 +11,9 @@ const settingsBtn = document.getElementById('settings-btn');
 const loadingOverlay = document.getElementById('loading-overlay');
 const formStatusDot = document.querySelector('.status-indicator .dot');
 const formStatusText = document.querySelector('.status-indicator span');
+const learningSection = document.getElementById('learning-section');
+const extraFieldsList = document.getElementById('extra-fields-list');
+const saveExtraBtn = document.getElementById('save-extra-btn');
 
 // Initial state
 loadingOverlay.style.display = 'flex';
@@ -20,6 +23,10 @@ window.addEventListener('message', (event) => {
   if (event.data.type === 'JOB_ANALYSIS_RESULTS') {
     updateJobDetails(event.data.data);
     loadingOverlay.style.display = 'none';
+  }
+  
+  if (event.data.type === 'UNFILLED_FIELDS_DETECTED') {
+      showLearningSection(event.data.fields);
   }
 });
 
@@ -98,6 +105,52 @@ rescanBtn.addEventListener('click', () => {
 
 settingsBtn.addEventListener('click', () => {
   chrome.runtime.openOptionsPage();
+});
+
+function showLearningSection(fields) {
+    if (fields.length === 0) {
+        learningSection.style.display = 'none';
+        return;
+    }
+
+    learningSection.style.display = 'block';
+    extraFieldsList.innerHTML = '';
+    
+    fields.forEach((field, index) => {
+        const item = document.createElement('div');
+        item.className = 'extra-field-item';
+        item.innerHTML = `
+            <div class="extra-field-info">
+                <div class="extra-field-label">${field.label}</div>
+                <div class="extra-field-value">New insight detected</div>
+            </div>
+            <label class="switch">
+                <input type="checkbox" data-label="${field.label}" checked>
+                <span class="slider"></span>
+            </label>
+        `;
+        extraFieldsList.appendChild(item);
+    });
+}
+
+saveExtraBtn.addEventListener('click', () => {
+    const selectedFields = [];
+    extraFieldsList.querySelectorAll('input:checked').forEach(input => {
+        selectedFields.push(input.getAttribute('data-label'));
+    });
+
+    if (selectedFields.length > 0) {
+        // In a real app, we'd send these to Gemini to summarize or store them
+        // For now, let's just acknowledge them
+        saveExtraBtn.innerText = 'Saved to memory!';
+        saveExtraBtn.disabled = true;
+        
+        setTimeout(() => {
+            learningSection.style.display = 'none';
+            saveExtraBtn.innerText = 'Remember Selected';
+            saveExtraBtn.disabled = false;
+        }, 2000);
+    }
 });
 
 // Check if profile exists on load

@@ -114,66 +114,100 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 function performAutofill(data) {
   const inputs = document.querySelectorAll('input, textarea, select');
+  const unfilledFields = [];
   
   inputs.forEach(input => {
-    const label = findLabelForInput(input).toLowerCase();
-    const placeholder = (input.placeholder || '').toLowerCase();
-    const name = (input.name || '').toLowerCase();
-    const id = (input.id || '').toLowerCase();
+    // Skip hidden, submit, or button inputs
+    if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button') return;
     
-    const context = `${label} ${placeholder} ${name} ${id}`;
+    const label = findLabelForInput(input).trim();
+    if (!label) return;
+    
+    const context = `${label} ${(input.placeholder || '')} ${(input.name || '')} ${(input.id || '')}`.toLowerCase();
+    let wasFilled = false;
     
     // 1. Personal & Professional
     if (context.includes('name') && !context.includes('company')) {
         fillValue(input, data.fullName);
+        wasFilled = !!data.fullName;
     } else if (context.includes('email')) {
         fillValue(input, data.email);
+        wasFilled = !!data.email;
     } else if (context.includes('phone') || context.includes('mobile')) {
         fillValue(input, data.phone);
+        wasFilled = !!data.phone;
     } else if (context.includes('linkedin')) {
         fillValue(input, data.linkedin);
+        wasFilled = !!data.linkedin;
     } else if (context.includes('github')) {
         fillValue(input, data.github);
+        wasFilled = !!data.github;
     } else if (context.includes('portfolio') || context.includes('website')) {
         fillValue(input, data.portfolio);
+        wasFilled = !!data.portfolio;
     } else if (context.includes('location') || context.includes('city') || context.includes('address')) {
         fillValue(input, data.location);
+        wasFilled = !!data.location;
     } 
     
     // 2. Work Authorization & Eligibility
     else if (context.includes('authorized') || context.includes('permission to work')) {
-        handleCategoricalInput(input, data.workAuth);
+        wasFilled = handleCategoricalInput(input, data.workAuth);
     } else if (context.includes('sponsorship') || context.includes('visa')) {
-        handleCategoricalInput(input, data.visaSupport);
+        wasFilled = handleCategoricalInput(input, data.visaSupport);
     }
     
     // 3. Veteran & Disability
     else if (context.includes('veteran')) {
-        handleCategoricalInput(input, data.veteran);
+        wasFilled = handleCategoricalInput(input, data.veteran);
     } else if (context.includes('disability')) {
-        handleCategoricalInput(input, data.disability);
+        wasFilled = handleCategoricalInput(input, data.disability);
     }
     
     // 4. Diversity & Preferences
     else if (context.includes('gender') || context.includes('sex')) {
-        handleCategoricalInput(input, data.gender);
+        wasFilled = handleCategoricalInput(input, data.gender);
     } else if (context.includes('salary') || context.includes('compensation')) {
         fillValue(input, data.salary);
+        wasFilled = !!data.salary;
     } else if (context.includes('relocate')) {
-        handleCategoricalInput(input, data.relocation);
+        wasFilled = handleCategoricalInput(input, data.relocation);
     }
 
     // 5. Resume Text
     else if (context.includes('resume') || context.includes('summary')) {
         if (input.tagName === 'TEXTAREA') {
             fillValue(input, data.resumeText);
+            wasFilled = !!data.resumeText;
+        }
+    }
+
+    // If it was a real question but we couldn't fill it, add to learning list
+    if (!wasFilled && label.length > 3) {
+        // Avoid adding duplicate labels
+        if (!unfilledFields.find(f => f.label === label)) {
+            unfilledFields.push({ label: label, id: input.id || input.name });
         }
     }
   });
+
+  // Report unfilled fields back to sidebar
+  if (unfilledFields.length > 0) {
+      const container = document.getElementById('jobfill-sidebar-container');
+      if (container) {
+          const iframe = container.querySelector('iframe');
+          if (iframe && iframe.contentWindow) {
+              iframe.contentWindow.postMessage({
+                  type: 'UNFILLED_FIELDS_DETECTED',
+                  fields: unfilledFields
+              }, '*');
+          }
+      }
+  }
 }
 
 function handleCategoricalInput(input, value) {
-    if (!value) return;
+    if (!value) return false;
 
     if (input.tagName === 'SELECT') {
         const options = Array.from(input.options);
@@ -184,6 +218,7 @@ function handleCategoricalInput(input, value) {
         if (bestMatch) {
             input.value = bestMatch.value;
             input.dispatchEvent(new Event('change', { bubbles: true }));
+            return true;
         }
     } else if (input.type === 'radio' || input.type === 'checkbox') {
         const parent = input.closest('div, label, fieldset');
@@ -192,11 +227,11 @@ function handleCategoricalInput(input, value) {
             if (labelText.includes(value.toLowerCase())) {
                 input.checked = true;
                 input.dispatchEvent(new Event('change', { bubbles: true }));
+                return true;
             }
         }
-    } else {
-        fillValue(input, value);
     }
+    return false;
 }
 
 function findLabelForInput(input) {
